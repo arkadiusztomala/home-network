@@ -1,0 +1,31 @@
+# MikroTik RBmAPL-2nD - Client Bridge for DVR (VLAN30)
+# wlan1: connects wirelessly to TP-Link-TL-WA850RE repeater
+# ether1: connects to DVR
+
+# 1. Create bridge to unify ether1 and wlan1
+/interface bridge
+add name=bridge-local comment="Bridge for DVR client (VLAN30)"
+/interface bridge port
+add bridge=bridge-local interface=ether1 comment="Port to DVR"
+add bridge=bridge-local interface=wlan1 comment="Wireless STA to repeater"
+
+# 2. Configure wireless as station-bridge
+/interface wireless
+set [ find default-name=wlan1 ] mode=station-bridge ssid="IoT_Network" frequency=auto band=2ghz-b/g/n disabled=no comment="Client to VLAN30 Wi-Fi"
+# security-profile must match CAPsMAN policy (WPA2-PSK iot-profile)
+set security-profile=iot-profile [ find default-name=wlan1 ]
+
+# 3. Assign static IP to bridge-local
+/ip address
+add address=192.168.30.12/24 interface=bridge-local comment="Static IP (VLAN30) for DVR client"
+
+# 4. Configure default route and DNS
+/ip route\ add gateway=192.168.30.1 comment="Default route via VLAN30 gateway"
+/ip dns
+set servers=8.8.8.8,8.8.4.4 allow-remote-requests=yes comment="DNS servers"
+
+# 5. Disable unused services
+/ip dhcp-client
+add interface=bridge-local disabled=yes comment="No DHCP on bridge-local (static IP)"
+
+# Now RBmAPL-2nD will bridge DVR traffic into VLAN30 over wireless link.
