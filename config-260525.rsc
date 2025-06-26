@@ -2,7 +2,7 @@
 # software id = N4KZ-AUQB
 #
 # model = RBD53iG-5HacD2HnD
-# serial number = E7290E2BFC1F
+# serial number = xxxxxxx
 /interface bridge
 add name=bridge-lan
 /interface wireless
@@ -10,7 +10,7 @@ set [ find default-name=wlan1 ] ssid=MikroTik
 set [ find default-name=wlan2 ] ssid=MikroTik
 /interface pppoe-client
 add add-default-route=yes comment="PPPoE client" disabled=no interface=ether1 \
-    name=pppoe-out1 password=609ape44 use-peer-dns=yes user=id-0610
+    name=pppoe-out1 password=xxxxxx use-peer-dns=yes user=xxxxxx
 /interface list
 add name=WAN
 add name=LAN
